@@ -1,4 +1,4 @@
-# Awesome Project Build with TypeORM
+# Notes-Up
 
 Steps to run this project:
 
