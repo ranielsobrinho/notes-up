@@ -2,8 +2,8 @@
    "type": "postgres",
    "host": "localhost",
    "port": 5432,
-   "username": "dev",
-   "password": "95751535r",
+   "username": process.env.DB_user,
+   "password": process.env.DB_PASS,
    "database": "notes-up",
    "entities": [
       "src/domain/entity/*.ts"
