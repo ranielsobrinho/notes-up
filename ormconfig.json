@@ -1,0 +1,18 @@
+{
+   "type": "postgres",
+   "host": "localhost",
+   "port": 5432,
+   "username": "dev",
+   "password": "95751535r",
+   "database": "notes-up",
+   "entities": [
+      "src/domain/entity/*.ts"
+   ],
+   "migrations": [
+      "src/domain/migration/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/domain/entity",
+      "migrationsDir": "src/domain/migration"
+   }
+}
