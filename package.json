@@ -21,7 +21,7 @@
       "yup": "^0.32.11"
    },
    "scripts": {
-      "start": "ts-node src/index.ts",
-      "typeorm": "npx ts-node ./node_modules/typeorm/cli.js"
+      "start": "ts-node-dev --respawn --transpile-only src/index.ts",
+      "orm": "npx ts-node ./node_modules/typeorm/cli.js"
    }
 }
