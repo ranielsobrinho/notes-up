@@ -34,7 +34,8 @@ class UserController {
             const { id } = req.params
             const userRepository = getRepository(User)
             const user = await userRepository.findOne(id, {
-                relations: ['notes']
+                relations: ['notes'],
+                select: ['username', 'notes', 'id']
             })
 
             if(!user) {
@@ -71,7 +72,7 @@ class UserController {
             if(findUser){
                 return res.status(401).json({
                     status: ResponseStatus.UNAUTHORIZED,
-                    message: 'User already exists. Choose another username.'
+                    message: 'User already exists.'
                 })
             }
 
