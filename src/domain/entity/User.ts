@@ -1,18 +1,27 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany} from "typeorm";
+import { Note } from "./Note";
 
-@Entity()
+@Entity('users')
 export class User {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column()
-    firstName: string;
+    username: string;
 
     @Column()
-    lastName: string;
+    password: string;
 
-    @Column()
-    age: number;
+    @CreateDateColumn()
+    created_at: Date;
 
+    @CreateDateColumn()
+    updated_at: Date;
+
+    @OneToMany(() => Note, (note) => note.userId, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    })
+    notes: Note[]
 }
