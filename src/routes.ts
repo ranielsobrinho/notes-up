@@ -10,5 +10,6 @@ routes.put('/users/:id', UserController.updateUser)
 routes.delete('/users/:id', UserController.deleteUser)
 
 routes.get('/notes', NoteController.getNotes)
+routes.post('/notes', NoteController.createNote)
 
 export default routes
