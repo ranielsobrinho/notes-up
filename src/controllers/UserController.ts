@@ -72,7 +72,7 @@ class UserController {
             if(findUser){
                 return res.status(401).json({
                     status: ResponseStatus.UNAUTHORIZED,
-                    message: 'User already exists.'
+                    message: 'User already exists. Choose another username.'
                 })
             }
 
@@ -81,6 +81,11 @@ class UserController {
 
             const createdUser = userRepository.create({username, password})
             await userRepository.save(createdUser)
+
+            return res.json({
+                status: ResponseStatus.OK,
+                data: createdUser
+            })
         } catch(error) {
             if (error instanceof ValidationError) {
                 return res.status(400).json({
@@ -159,3 +164,5 @@ class UserController {
         }
     }
 }
+
+export default new UserController()
