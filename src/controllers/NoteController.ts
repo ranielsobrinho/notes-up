@@ -53,6 +53,30 @@ class NoteController{
             })
         }
     }
+
+    async updateNote(req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
+        try{
+            const { id } = req.params
+            const noteRepository = getRepository(Note)
+            const updateNote = await noteRepository.update(id, req.body)
+            
+            return res.json({
+                status: ResponseStatus.OK,
+                message: 'Note updated successfully.'
+            })
+        }catch(error){
+            if(error instanceof ValidationError){
+                return res.status(400).json({
+                    status: ResponseStatus.BAD_REQUEST,
+                    errors: error.errors
+                })
+            }
+            return res.status(500).json({
+                status: ResponseStatus.INTERNAL_SERVER_ERROR,
+                message: 'An internal server error has happened.'
+            })
+        }
+    }
 }
 
 export default new NoteController()
