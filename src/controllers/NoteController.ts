@@ -8,7 +8,10 @@ class NoteController{
     async getNotes(req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
         try{
             const noteRepository = getRepository(Note)
-            const notes = noteRepository.find()
+            const notes = await noteRepository.find({
+                relations: ['userId'],
+                select: ['id', 'content', 'userId']
+            })
             return res.json({
                 status: ResponseStatus.OK,
                 data: notes
