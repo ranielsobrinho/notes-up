@@ -71,7 +71,7 @@ class UserController {
             if(findUser){
                 return res.status(401).json({
                     status: ResponseStatus.UNAUTHORIZED,
-                    message: 'User already exists.'
+                    message: 'User already exists. Choose another username.'
                 })
             }
 
@@ -158,5 +158,3 @@ class UserController {
         }
     }
 }
-
-export default new UserController()
