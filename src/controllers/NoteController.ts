@@ -77,6 +77,37 @@ class NoteController{
             })
         }
     }
+    
+    async deleteTodo (req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
+        try{
+            const { id } = req.params
+            const noteRepository = getRepository(Note)
+            const findNote = await noteRepository.findOne(id)
+            if(!findNote){
+                return res.status(404).json({
+                    status: ResponseStatus.NOT_FOUND,
+                    message: 'This note does not exist.'
+                })
+            }
+
+            const deletedNote = await noteRepository.delete(id)
+            return res.json({
+                status: ResponseStatus.OK,
+                message: 'Note deleted successfully.'
+            })
+        }catch(error){
+            if(error instanceof ValidationError){
+                return res.status(400).json({
+                    status: ResponseStatus.BAD_REQUEST,
+                    errors: error.errors
+                })
+            }
+            return res.status(500).json({
+                status: ResponseStatus.INTERNAL_SERVER_ERROR,
+                message: 'An internal server error has happened.'
+            })
+        }
+    }
 }
 
 export default new NoteController()
