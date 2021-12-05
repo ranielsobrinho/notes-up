@@ -1,14 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from 'jwt-simple'
 
-export default function authenticate(req: Request, res: Response, next: NextFunction){
-    try{
-        const token = req.headers.authorization.split(' ')[1]
-        const decoded = jwt.decode(token, '0187263r')
-        if(decoded){
-            next()
+class AuthMiddleware {
+    async auth(req: Request, res: Response, next: NextFunction){
+        try{
+            const token = req.headers.authorization.split(' ')[1]
+            const decodedToken:string = await jwt.decode(token, process.env.TOKEN)
+            if(!decodedToken) {
+                return res.status(401).json({message: 'You are not allowed to do this.'})
+            }
+            return next()
+        } catch (error) {
+            return res.json(error)
         }
-    }catch(error){
-        return res.status(400).json(error)
     }
 }
+
+export default new AuthMiddleware()
