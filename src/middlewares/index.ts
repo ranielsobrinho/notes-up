@@ -1,7 +1,7 @@
 import validate from "./validationMiddleware";
-import authenticate from "./authMiddleare";
+import AuthMiddleware from "./authMiddleare";
 
 export {
     validate,
-    authenticate
+    AuthMiddleware
 }
