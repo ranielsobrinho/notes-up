@@ -16,8 +16,37 @@ class NoteController{
                 status: ResponseStatus.OK,
                 data: notes
             })
-        }catch(error){
-            if(error instanceof ValidationError){
+        } catch (error) {
+            if (error instanceof ValidationError) {
+                return res.status(400).json({
+                    status: ResponseStatus.BAD_REQUEST,
+                    errors: error.errors
+                })
+            }
+            return res.status(500).json({
+                status: ResponseStatus.INTERNAL_SERVER_ERROR,
+                message: 'An internal server error has happened.'
+            })
+        }
+    }
+
+    async getNote(req: Request, res: Response<IResponse>,): Promise<Response<IResponse>> {
+        try {
+            const noteRepository = getRepository(Note)
+            const { id } = req.params
+            const note = await noteRepository.find({ where: { id } })
+            if (!note.length) {
+                return res.status(404).json({
+                    status: ResponseStatus.NOT_FOUND,
+                    message: 'This note does not exist.'
+                })
+            }
+            return res.json({
+                status: ResponseStatus.OK,
+                data: note
+            })
+        } catch (error) {
+            if (error instanceof ValidationError) {
                 return res.status(400).json({
                     status: ResponseStatus.BAD_REQUEST,
                     errors: error.errors
