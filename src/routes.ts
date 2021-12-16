@@ -14,9 +14,9 @@ routes.delete('/users/:id', AuthMiddleware.auth ,UserController.deleteUser)
 
 routes.get('/notes', NoteController.getNotes)
 routes.get('/notes/:id', NoteController.getNote)
-routes.post('/notes', validate(noteSchema) , AuthMiddleware.auth, NoteController.createNote)
-routes.put('/notes/:id', AuthMiddleware.auth , NoteController.updateNote)
-routes.delete('/notes/:id', AuthMiddleware.auth ,NoteController.deleteTodo)
+routes.post('/notes', validate(noteSchema) , NoteController.createNote)
+routes.put('/notes/:id', NoteController.updateNote)
+routes.delete('/notes/:id' ,NoteController.deleteTodo)
 
 routes.post('/auth', validate(userSchema), AuthController.authenticate)
 
