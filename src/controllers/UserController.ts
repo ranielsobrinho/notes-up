@@ -153,17 +153,15 @@ class UserController {
     async deleteUser(req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
         try {
             const { id } = req.params
-            const userRepository = getRepository(User)
-            const findUser = await userRepository.findOne(id)
+            const deletedUser = await UserService.deleteUser(id)
 
-            if (!findUser) {
+            if (deletedUser instanceof Error) {
                 return res.status(401).json({
                     status: ResponseStatus.BAD_REQUEST,
-                    message: 'No user has been found. You need an existing account to delete.'
+                    message: deletedUser.message
                 })
             }
 
-            const deletedUser = await userRepository.delete(id)
             return res.json({
                 status: ResponseStatus.OK,
                 message: 'User data has been deleted.'
