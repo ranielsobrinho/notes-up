@@ -57,6 +57,15 @@ class UserService {
     const updated = await repo.update(username, { password })
     return updated
   }
+
+  async deleteUser(id: string) {
+    const repo = getRepository(User)
+    if (! await repo.findOne(id)) {
+      return new Error('User does not exists.')
+    }
+    const deleted = await repo.delete(id)
+    return deleted
+  }
 }
 
 export default new UserService()
