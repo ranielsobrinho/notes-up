@@ -108,8 +108,36 @@ class UserController {
                 status: ResponseStatus.OK,
                 message: 'User data has been updated.'
             })
-        }catch(error) {
-            if(error instanceof ValidationError){
+        } catch (error) {
+            if (error instanceof ValidationError) {
+                return res.status(400).json({
+                    status: ResponseStatus.BAD_REQUEST,
+                    errors: error.errors
+                })
+            }
+            return res.status(500).json({
+                status: ResponseStatus.INTERNAL_SERVER_ERROR,
+                message: 'An internal server error has happened.'
+            })
+        }
+    }
+
+    async updatePassword(req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
+        try {
+            const { username, password } = req.body
+            const update = await UserService.updatePassword({ username, password })
+            if (update instanceof Error) {
+                return res.status(400).json({
+                    status: ResponseStatus.BAD_REQUEST,
+                    message: update.message
+                })
+            }
+            return res.json({
+                status: ResponseStatus.OK,
+                data: update
+            })
+        } catch (error) {
+            if (error instanceof ValidationError) {
                 return res.status(400).json({
                     status: ResponseStatus.BAD_REQUEST,
                     errors: error.errors
