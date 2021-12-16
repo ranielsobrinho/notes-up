@@ -23,7 +23,8 @@ class AuthController {
                     }
                     const payload = {id: user.id}
                     return res.json({
-                        token: jwt.encode( payload, '0187263r' )
+                        token: jwt.encode( payload, '0187263r' ),
+                        userId: user.id,
                     })
                 })
             }
