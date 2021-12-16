@@ -1,22 +1,23 @@
 import { Router } from 'express'
 
-import { UserController, NoteController, AuthController } from './controllers/'
+import { NoteController, AuthController } from './controllers/'
 import { userSchema, noteSchema } from './utils/validations'
 import { validate, AuthMiddleware } from './middlewares/'
+import { GetUsers, GetUser, CreateUser, UpdateUser, DeleteUser } from './controllers/UserController/'
 
 const routes = Router()
 
-routes.get('/users', UserController.getUsers)
-routes.get('/users/:id', UserController.getOneUser)
-routes.post('/users', validate(userSchema), UserController.createUser)
-routes.put('/users/:id', validate(userSchema), AuthMiddleware.auth, UserController.updateUser)
-routes.delete('/users/:id', AuthMiddleware.auth ,UserController.deleteUser)
+routes.get('/users', GetUsers.execute)
+routes.get('/users/:id', GetUser.execute)
+routes.post('/users', validate(userSchema), CreateUser.execute)
+routes.put('/users/:id', validate(userSchema), AuthMiddleware.auth, UpdateUser.execute)
+routes.delete('/users/:id', AuthMiddleware.auth, DeleteUser.execute)
 
 routes.get('/notes', NoteController.getNotes)
 routes.get('/notes/:id', NoteController.getNote)
-routes.post('/notes', validate(noteSchema) , NoteController.createNote)
+routes.post('/notes', validate(noteSchema), NoteController.createNote)
 routes.put('/notes/:id', NoteController.updateNote)
-routes.delete('/notes/:id' ,NoteController.deleteTodo)
+routes.delete('/notes/:id', NoteController.deleteTodo)
 
 routes.post('/auth', validate(userSchema), AuthController.authenticate)
 
