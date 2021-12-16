@@ -63,13 +63,6 @@ class NoteController {
         try {
             const { userId } = req.body
             const noteRepository = getRepository(Note)
-            const findUser = await noteRepository.findOne(userId)
-            if (!findUser) {
-                return res.status(401).json({
-                    status: ResponseStatus.UNAUTHORIZED,
-                    message: 'This user does not exist.'
-                })
-            }
             const createdNote = noteRepository.create(req.body)
             await noteRepository.save(createdNote)
 
