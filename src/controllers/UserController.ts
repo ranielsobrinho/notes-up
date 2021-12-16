@@ -4,12 +4,12 @@ import { ResponseStatus, IResponse } from "../utils/service";
 import { User } from '../domain/entity'
 import { ValidationError } from "yup";
 import * as bcrypt from 'bcrypt'
+import UserService from "../services/UserService";
 
 class UserController {
     async getUsers (req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
         try{
-            const userRepository = getRepository(User)
-            const allUsers = await userRepository.find()
+            const allUsers = await UserService.getAll()
             return res.json({
                 status: ResponseStatus.OK,
                 data: allUsers
@@ -32,16 +32,12 @@ class UserController {
     async getOneUser (req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
         try{
             const { id } = req.params
-            const userRepository = getRepository(User)
-            const user = await userRepository.findOne(id, {
-                relations: ['notes'],
-                select: ['username', 'notes', 'id']
-            })
+            const user = await UserService.getOne(id)
 
-            if(!user) {
+            if(user instanceof Error) {
                 return res.status(404).json({
                     status: ResponseStatus.NOT_FOUND,
-                    message: 'No user has been found.'
+                    message: user.message
                 })
             }
 
@@ -65,22 +61,15 @@ class UserController {
 
     async createUser (req: Request, res: Response<IResponse>): Promise<Response<IResponse>>{
         try{
-            const userRepository = getRepository(User)
-            const { username } = req.body
-            const findUser = await userRepository.findOne( { where: { username } } )
+            const { username, password } = req.body
+            const createdUser = await UserService.createUser({username, password})
 
-            if(findUser){
+            if(createdUser instanceof Error){
                 return res.status(401).json({
                     status: ResponseStatus.UNAUTHORIZED,
-                    message: 'User already exists. Choose another username.'
+                    message: createdUser.message
                 })
             }
-
-            const salt = bcrypt.genSaltSync(10)
-            const password = bcrypt.hashSync(req.body.password, salt)
-
-            const createdUser = userRepository.create({username, password})
-            await userRepository.save(createdUser)
 
             return res.json({
                 status: ResponseStatus.OK,
@@ -93,9 +82,10 @@ class UserController {
                     errors: error.errors
                 })
             }
-            return res.json({
+            return res.status(500).json({
                 status: ResponseStatus.INTERNAL_SERVER_ERROR,
-                message: 'An internal server error has happened.'
+                message: 'An internal server error has happened.',
+                errors: error
             })
         }
     }
