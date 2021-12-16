@@ -7,15 +7,15 @@ import * as bcrypt from 'bcrypt'
 import UserService from "../services/UserService";
 
 class UserController {
-    async getUsers (req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
-        try{
+    async getUsers(req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
+        try {
             const allUsers = await UserService.getAll()
             return res.json({
                 status: ResponseStatus.OK,
                 data: allUsers
             })
-        }catch(error){
-            if( error instanceof ValidationError ){
+        } catch (error) {
+            if (error instanceof ValidationError) {
                 return res.status(400).json({
                     status: ResponseStatus.BAD_REQUEST,
                     errors: error.errors
@@ -26,15 +26,15 @@ class UserController {
                 message: 'An internal server error has happened.'
             })
         }
-        
+
     }
 
-    async getOneUser (req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
-        try{
+    async getOneUser(req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
+        try {
             const { id } = req.params
             const user = await UserService.getOne(id)
 
-            if(user instanceof Error) {
+            if (user instanceof Error) {
                 return res.status(404).json({
                     status: ResponseStatus.NOT_FOUND,
                     message: user.message
@@ -45,8 +45,8 @@ class UserController {
                 status: ResponseStatus.OK,
                 data: user
             })
-        } catch(error) {
-            if ( error instanceof ValidationError ) {
+        } catch (error) {
+            if (error instanceof ValidationError) {
                 return res.status(400).json({
                     status: ResponseStatus.BAD_REQUEST,
                     errors: error.errors
@@ -59,12 +59,12 @@ class UserController {
         }
     }
 
-    async createUser (req: Request, res: Response<IResponse>): Promise<Response<IResponse>>{
-        try{
+    async createUser(req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
+        try {
             const { username, password } = req.body
-            const createdUser = await UserService.createUser({username, password})
+            const createdUser = await UserService.createUser({ username, password })
 
-            if(createdUser instanceof Error){
+            if (createdUser instanceof Error) {
                 return res.status(401).json({
                     status: ResponseStatus.UNAUTHORIZED,
                     message: createdUser.message
@@ -75,7 +75,7 @@ class UserController {
                 status: ResponseStatus.OK,
                 data: createdUser
             })
-        } catch(error) {
+        } catch (error) {
             if (error instanceof ValidationError) {
                 return res.status(400).json({
                     status: ResponseStatus.BAD_REQUEST,
@@ -91,21 +91,21 @@ class UserController {
     }
 
     async updateUser(req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
-        try{
+        try {
             const { id } = req.params
-            const userRepository = getRepository(User)
-            const findUser = await userRepository.findOne(id)
+            const { username } = req.body
+            const update = await UserService.updateUsername(id, username)
 
-            if(!findUser) {
+            if (update instanceof Error) {
                 return res.status(401).json({
                     status: ResponseStatus.UNAUTHORIZED,
-                    message: 'No user has been found. You need an existing account to update.'
+                    message: update.message
                 })
             }
-            
-            const update = await userRepository.update(id, req.body)
+
             return res.json({
                 status: ResponseStatus.OK,
+                data: update,
                 message: 'User data has been updated.'
             })
         } catch (error) {
@@ -150,13 +150,13 @@ class UserController {
         }
     }
 
-    async deleteUser (req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
-        try{
+    async deleteUser(req: Request, res: Response<IResponse>): Promise<Response<IResponse>> {
+        try {
             const { id } = req.params
             const userRepository = getRepository(User)
             const findUser = await userRepository.findOne(id)
 
-            if(!findUser){
+            if (!findUser) {
                 return res.status(401).json({
                     status: ResponseStatus.BAD_REQUEST,
                     message: 'No user has been found. You need an existing account to delete.'
@@ -168,8 +168,8 @@ class UserController {
                 status: ResponseStatus.OK,
                 message: 'User data has been deleted.'
             })
-        }catch(error){
-            if (error instanceof ValidationError){
+        } catch (error) {
+            if (error instanceof ValidationError) {
                 return res.status(400).json({
                     status: ResponseStatus.BAD_REQUEST,
                     errors: error.errors
