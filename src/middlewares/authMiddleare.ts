@@ -6,10 +6,10 @@ class AuthMiddleware {
         try{
             const token = req.headers.authorization.split(' ')[1]
             const decodedToken:string = await jwt.decode(token, process.env.TOKEN)
-            if(!decodedToken) {
-                return res.status(401).json({message: 'You are not allowed to do this.'})
+            if(decodedToken) {
+                return next()
             }
-            return next()
+            return res.status(401).json({message: 'You are not allowed to do this.'})
         } catch (error) {
             return res.json(error)
         }
