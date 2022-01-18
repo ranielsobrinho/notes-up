@@ -1,6 +1,10 @@
 import { getRepository } from 'typeorm'
 import { User } from '../../domain/entity'
 
+interface UserRequest {
+  id: string,
+  username: string
+}
 class UpdateUserService {
   async handle(id: string, username: string) {
     const repo = getRepository(User)
